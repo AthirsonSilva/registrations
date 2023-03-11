@@ -6,6 +6,8 @@ import com.api.app.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -17,7 +19,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(Long id) {
-        return null;
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    @Override
+    public User update(User user, Long id) {
+        User userToUpdate = findById(id);
+
+        userToUpdate.setFirstName(user.getFirstName());
+        userToUpdate.setLastName(user.getLastName());
+        userToUpdate.setEmail(user.getEmail());
+
+        return userRepository.save(userToUpdate);
+    }
+
+    @Override
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }
