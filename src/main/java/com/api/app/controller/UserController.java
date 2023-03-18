@@ -2,6 +2,7 @@ package com.api.app.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,7 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<UserPayload> create(@RequestBody UserPayload request) {
+	public ResponseEntity<UserPayload> create(@Validated @RequestBody UserPayload request) {
 		UserPayload savedUser = userService.create(request);
 
 		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
@@ -51,7 +52,8 @@ public class UserController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<UserPayload> update(@PathVariable("id") Long id, @RequestBody UserPayload request) {
+	public ResponseEntity<UserPayload> update(@PathVariable("id") Long id,
+			@Validated @RequestBody UserPayload request) {
 		UserPayload updatedUser = userService.update(request, id);
 
 		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
