@@ -1,47 +1,58 @@
 package com.api.app.service.impl;
 
-import com.api.app.entity.User;
-import com.api.app.repository.UserRepository;
-import com.api.app.service.UserService;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.api.app.entity.User;
+import com.api.app.mapper.UserMapper;
+import com.api.app.payload.UserPayload;
+import com.api.app.repository.UserRepository;
+import com.api.app.service.UserService;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    @Override
-    public User create(User user) {
-        return userRepository.save(user);
-    }
+	@Override
+	public UserPayload create(UserPayload request) {
+		User savedUser = userRepository.save(UserMapper.mapToEntity(request));
 
-    @Override
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-    }
+		return UserMapper.mapToPayload(savedUser);
+	}
 
-    @Override
-    public User update(User user, Long id) {
-        User userToUpdate = findById(id);
+	@Override
+	public UserPayload findById(Long id) {
+		User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
-        userToUpdate.setFirstName(user.getFirstName());
-        userToUpdate.setLastName(user.getLastName());
-        userToUpdate.setEmail(user.getEmail());
+		return UserMapper.mapToPayload(user);
+	}
 
-        return userRepository.save(userToUpdate);
-    }
+	@Override
+	public UserPayload update(UserPayload user, Long id) {
+		User userToUpdate = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
-    @Override
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
+		userToUpdate.setFirstName(user.getFirstName());
+		userToUpdate.setLastName(user.getLastName());
+		userToUpdate.setEmail(user.getEmail());
 
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
+		userRepository.save(userToUpdate);
+
+		return UserMapper.mapToPayload(userToUpdate);
+	}
+
+	@Override
+	public void delete(Long id) {
+		userRepository.deleteById(id);
+	}
+
+	@Override
+	public List<UserPayload> findAll() {
+		List<User> users = userRepository.findAll();
+
+		return users.stream().map(UserMapper::mapToPayload).toList();
+	}
 }
