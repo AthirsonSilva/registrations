@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.app.payload.UserPayload;
 import com.api.app.service.UserService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("api/v1/users")
 @AllArgsConstructor
+@Tag(name = "CRUD REST APIs for User Resource", description = "CRUD REST APIs - Create User, Update User, Get User, Get All Users, Delete User")
 public class UserController {
 	private final UserService userService;
 
