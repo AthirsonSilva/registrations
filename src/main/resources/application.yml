@@ -21,4 +21,29 @@ logging:
   level: 
     "[org.hibernate.SQL]": DEBUG
     "[org.hibernate.type]": TRACE
+
+server:
+    port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+
+    shutdown:
+      enabled: true
+
+  info:
+    env:
+      enabled: true
     
+info:
+    app:
+        name: Registration Service 
+        description: Registration Service RESTful API 
+        version: 1.0.0
